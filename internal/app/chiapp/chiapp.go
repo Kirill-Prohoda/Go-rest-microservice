@@ -13,7 +13,8 @@ import (
 func ChiApp(storage *sqlite.Storage, log *slog.Logger) {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger) //TODO нужно написать собственный логер
 	r.Use(middleware.Recoverer)
 
 	r.Get("/tube", func(w http.ResponseWriter, r *http.Request) {
