@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"go-rest-microservice/internal/http-server/handlers/redirect"
 	"go-rest-microservice/internal/http-server/handlers/url/fetchurl"
 	"go-rest-microservice/internal/http-server/handlers/url/save"
 	mw "go-rest-microservice/internal/http-server/middleware"
@@ -26,10 +27,33 @@ func ChiApp(storage *sqlite.Storage, log *slog.Logger, cfg *config.Config) {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.URLFormat) // позволяет использовать -> /post/{id}
 
-	r.Post("/save-url", save.New(log, storage))
-	r.Get("/get-url/{url}", fetchurl.FetchHandler(log, storage))
+	r.Route("/url", func(r chi.Router) {
+
+		//TODO скрин прилагается в docs
+		r.Use(middleware.BasicAuth("url-shortener", map[string]string{
+			cfg.HTTPServer.User: cfg.HTTPServer.Password,
+		}))
+
+		r.Post("/", save.New(log, storage))
+		r.Get("/{url}", fetchurl.FetchHandler(log, storage))
+	})
+
+	r.Get("/{url}", redirect.MakeRedirect(log, storage))
 
 	log.Info("Listen: " + cfg.Address)
-	http.ListenAndServe(cfg.Address, r)
+	// http.ListenAndServe(cfg.Address, r)
 
+	srv := &http.Server{
+		Addr:         cfg.Address,
+		Handler:      r,
+		ReadTimeout:  cfg.HTTPServer.Timeout,
+		WriteTimeout: cfg.HTTPServer.Timeout,
+		IdleTimeout:  cfg.HTTPServer.IdleTimeout,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		log.Error("failed to start server")
+	}
+
+	log.Error("server stoped")
 }

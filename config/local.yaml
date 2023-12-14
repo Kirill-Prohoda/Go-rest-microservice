@@ -3,3 +3,5 @@ storage_path: "./storage/storage.db"
 http_server:
   address: "localhost:5001"
   idle_timeout: 60s
+  user: "root"
+  password: "root"

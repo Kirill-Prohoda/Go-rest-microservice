@@ -24,6 +24,8 @@ type HTTPServer struct {
 	Address     string        `yaml:"address" env-required:"true"` /* env-required:"true" */
 	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"iddle_timeout" env-default:"6s"`
+	User        string        `yaml:"user" env-required:"true"`
+	Password    string        `yaml:"password" env-required:"true" env:"HTTP_SERVER_PASSWORD"`
 }
 
 func InitConfig() *Config {
