@@ -24,7 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	chiapp.ChiApp(storage, log)
+	chiapp.ChiApp(storage, log, cfg)
 
 	// resURL, err := storage.GetURL("tube")
 	// if err != nil {

@@ -1,6 +1,7 @@
 package chiapp
 
 import (
+	"go-rest-microservice/internal/config"
 	"go-rest-microservice/internal/storage/sqlite"
 	"log/slog"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func ChiApp(storage *sqlite.Storage, log *slog.Logger) {
+func ChiApp(storage *sqlite.Storage, log *slog.Logger, cfg *config.Config) {
 
 	log.Info("Start Chi app")
 
@@ -28,7 +29,7 @@ func ChiApp(storage *sqlite.Storage, log *slog.Logger) {
 	r.Post("/save-url", save.New(log, storage))
 	r.Get("/get-url/{url}", fetchurl.FetchHandler(log, storage))
 
-	log.Info("Listen http://localhost:3333")
-	http.ListenAndServe(":3333", r)
+	log.Info("Listen: " + cfg.Address)
+	http.ListenAndServe(cfg.Address, r)
 
 }
