@@ -17,6 +17,8 @@ func main() {
 
 	// log = log.With("added for each log")
 	storage, err := sqlite.New(cfg.StoragePath)
+	// storage, err := sqlite.New(os.Getenv("STORAGE_PATH"))
+
 	if err != nil {
 		log.Error("failed to init storage", slogAdapter.Err(err))
 		os.Exit(1)

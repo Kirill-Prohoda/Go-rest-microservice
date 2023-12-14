@@ -7,7 +7,7 @@ import (
 	"go-rest-microservice/internal/storage"
 
 	"github.com/mattn/go-sqlite3"
-	_ "github.com/mattn/go-sqlite3" /*обязательно нужно инициализировать драйвер*/
+	// _ "github.com/mattn/go-sqlite3" /*обязательно нужно инициализировать драйвер*/
 )
 
 type Storage struct {
